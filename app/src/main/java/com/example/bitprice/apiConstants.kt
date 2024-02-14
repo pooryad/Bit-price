@@ -6,6 +6,14 @@ const val BASE_URL = "https://min-api.cryptocompare.com/data/"
 const val BASE_URL_IMAGE = "https://www.cryptocompare.com"
 const val API_KEY =
     "authorization: Apikey 770f5ad47e13a3815449f65a532e1129add38b59219eff6cb0e4faf82989f3f8"
+
+const val TWITTER_URL= "https://twitter.com/"
+
+
+// Transfer_Key
+
+const val Data1 = "bundle1"
+const val Data2 = "bundle2"
 const val DataTransfer = "DataToActivity"
 
 

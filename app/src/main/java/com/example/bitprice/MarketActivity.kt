@@ -12,15 +12,19 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.example.bitprice.apiManager.ApiManager
+import com.example.bitprice.apiManager.classData.CoinAboutData
+import com.example.bitprice.apiManager.classData.CoinItem
 import com.example.bitprice.apiManager.classData.CoinsData
 
 
 import com.example.bitprice.databinding.ActivityMarketBinding
+import com.google.gson.Gson
 
 
 class MarketActivity : AppCompatActivity(), MarketAdapter.RecyclerCallback {
     private lateinit var binding: ActivityMarketBinding
     private val apiManager = ApiManager()
+    private lateinit var dataMap: MutableMap<String, CoinItem>
     lateinit var newsData: ArrayList<Pair<String, String>>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +43,9 @@ class MarketActivity : AppCompatActivity(), MarketAdapter.RecyclerCallback {
             )
         }
 
+
+        getAboutCoin()
+
     }
 
 
@@ -48,8 +55,38 @@ class MarketActivity : AppCompatActivity(), MarketAdapter.RecyclerCallback {
     }
 
     private fun ui() {
+
         getNewsFromApi()
         getTopCoins()
+    }
+
+    private fun getAboutCoin() {
+
+        val fileInString = applicationContext.assets.open("currencyinfo.json").bufferedReader()
+            .use { it.readText() }
+
+
+        dataMap = mutableMapOf()
+
+
+        val dataAbout = Gson().fromJson(fileInString, CoinAboutData::class.java)
+
+
+        dataAbout.forEach {
+
+
+            dataMap[it.currencyName] = CoinItem(
+                it.info.web,
+                it.info.github,
+                it.info.twt,
+                it.info.desc,
+                it.info.reddit
+
+            )
+
+        }
+
+
     }
 
 
@@ -125,7 +162,18 @@ class MarketActivity : AppCompatActivity(), MarketAdapter.RecyclerCallback {
 
     override fun coinClick(dataCoin: CoinsData.Data) {
         val intent = Intent(this, CoinActivity::class.java)
-        intent.putExtra(DataTransfer, dataCoin)
+
+
+        val bundle = Bundle()
+        bundle.putParcelable(Data1, dataCoin)
+        bundle.putParcelable(Data2, dataMap[dataCoin.coinInfo.name])
+
+        intent.putExtra(DataTransfer, bundle)
+
+
+
+
+
         startActivity(intent)
 
     }
